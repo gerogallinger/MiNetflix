@@ -23,7 +23,7 @@ public abstract class Video implements Visualizable {
 
     // #region Getters and Setters
     public String getTitulo() {
-        return titulo;
+        return this.titulo;
     }
 
     public void setTitulo(String titulo) {
