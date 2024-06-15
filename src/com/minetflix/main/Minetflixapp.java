@@ -1,11 +1,11 @@
 package com.minetflix.main;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.minetflix.main.Classes.Capitulo;
 import com.minetflix.main.Classes.Pelicula;
 import com.minetflix.main.Classes.Serie;
+import com.minetflix.main.Classes.Video;
 import com.minetflix.main.Services.MinetflixService;
 
 public class Minetflixapp {
@@ -105,7 +105,7 @@ public class Minetflixapp {
     }
 
     private static void registrarCapitulo(Scanner lector, MinetflixService minetflixService) {
-        // TODO Auto-generated method stub
+
         // pedir la serie a la que se le agregara el capitulo
         System.out.print("Ingrese el id de la serie a la que se le agregara el capitulo: ");
         int id = lector.nextInt();
@@ -158,7 +158,7 @@ public class Minetflixapp {
     }
 
     private static void actualizarPelicula(Scanner lector, MinetflixService minetflixService) {
-        // TODO Auto-generated method stub
+
         // deberiamos pedir el id de la pelicula a actualizar
         System.out.print("Ingrese el id de la pelicula a actualizar: ");
         int id = lector.nextInt();
@@ -247,32 +247,34 @@ public class Minetflixapp {
     }
 
     public static void listarSeriesAndPeliculas(Scanner lector, MinetflixService minetflixService) {
-        var videos = minetflixService.getVideos();
-        System.out.println("Videos: " + videos.size());
-        // desglozar de los videos cuales son series y cuales peliculas
-        var series = new ArrayList<Serie>();
-        var peliculas = new ArrayList<Pelicula>();
 
-        videos.forEach(video -> {
+        var videos = minetflixService.getVideos();
+        System.out.println("Videos: " + videos.length);
+
+        // desglozar de los videos cuales son series y cuales peliculas
+        Serie[] series = new Serie[100]; // Suponiendo un tamaño máximo
+        Pelicula[] peliculas = new Pelicula[100];
+        int serieCount = 0, peliculaCount = 0;
+
+        for (Video video : minetflixService.getVideos()) {
+            if (video == null)
+                break;
             if (video instanceof Serie) {
-                series.add(0, (Serie) video);
+                series[serieCount++] = (Serie) video;
             } else if (video instanceof Pelicula) {
-                peliculas.add(0, (Pelicula) video);
-                System.out.println("Pelicula: " + video.getTitulo());
-                System.out.println("Pelicula: " + video.getGenero());
-                System.out.println("Pelicula: " + video.getDuracion());
+                peliculas[peliculaCount++] = (Pelicula) video;
             }
-        });
+        }
 
         System.out.println("Series: ");
-        series.forEach(serie -> {
-            System.out.println(" -- " + serie.getTitulo());
-        });
+        for (int i = 0; i < serieCount; i++) {
+            System.out.println(" -- " + series[i].getTitulo());
+        }
 
         System.out.println("Peliculas: ");
-        peliculas.forEach(peli -> {
-            System.out.println(" -- " + peli.getTitulo());
-        });
+        for (int i = 0; i < peliculaCount; i++) {
+            System.out.println(" -- " + peliculas[i].getTitulo());
+        }
 
     }
 

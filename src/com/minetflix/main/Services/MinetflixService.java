@@ -1,6 +1,7 @@
 package com.minetflix.main.Services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.minetflix.main.Classes.Pelicula;
@@ -9,33 +10,41 @@ import com.minetflix.main.Classes.Video;
 
 public class MinetflixService {
 
-    private List<Video> videos;
+    private Video[] videos;
+    private int videoCount; // Necesario para llevar la cuenta de cuántos vídeos hemos agregado, ya que no
+                            // hay métodos de tamaño en los arrays.
 
     // Constructor
     public MinetflixService() {
-        this.videos = new ArrayList<>();
+        this.videos = new Video[100]; // suponiendo un tamaño máximo de 100
+        this.videoCount = 0;
     }
 
     public void agregarVideo(Video video) {
-        this.videos.add(video);
+        if (videoCount < videos.length) {
+            this.videos[videoCount++] = video;
+        } else {
+            System.out.println("Array completo, no se pueden agregar más videos.");
+        }
     }
 
-    public List<Video> getVideos() {
+    public Video[] getVideos() {
         return videos;
     }
 
     public Video getVideoById(int id) {
-        return videos.get(id);
+        return id >= 0 && id < videoCount ? videos[id] : null;
     }
 
-    public List<Video> vistos() {
-        List<Video> vistos = new ArrayList<>();
-        for (Video video : videos) {
-            if (video.isVisto()) {
-                vistos.add(video);
+    public Video[] vistos() {
+        Video[] vistos = new Video[videoCount];
+        int count = 0;
+        for (int i = 0; i < videoCount; i++) {
+            if (videos[i].isVisto()) {
+                vistos[count++] = videos[i];
             }
         }
-        return vistos;
+        return Arrays.copyOf(vistos, count); // Reduce the array to the actual number of elements
     }
 
     public List<Video> pendientes() {
