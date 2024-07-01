@@ -268,12 +268,13 @@ public class Minetflixapp {
 
         System.out.println("Series: ");
         for (int i = 0; i < serieCount; i++) {
-            System.out.println(" -- " + series[i].getTitulo()+ " -- Temporadas: " + series[i].getTemporadas();
+            System.out.println(" -- " + series[i].getTitulo() + " -- Temporadas: " + series[i].getTemporadas());
         }
 
         System.out.println("Peliculas: ");
         for (int i = 0; i < peliculaCount; i++) {
-            System.out.println(" -- " + peliculas[i].getTitulo()+ " -- Duracion: " + peliculas[i].getDuracion() + " minutos");
+            System.out.println(
+                    " -- " + peliculas[i].getTitulo() + " -- Duracion: " + peliculas[i].getDuracion() + " minutos");
         }
 
     }

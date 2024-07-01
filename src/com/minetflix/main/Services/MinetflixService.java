@@ -1,8 +1,6 @@
 package com.minetflix.main.Services;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import com.minetflix.main.Classes.Pelicula;
 import com.minetflix.main.Classes.Serie;
@@ -47,25 +45,26 @@ public class MinetflixService {
         return Arrays.copyOf(vistos, count); // Reduce the array to the actual number of elements
     }
 
-    public List<Video> pendientes() {
-        // logica inversa a vistos
-        List<Video> pendientes = new ArrayList<>();
-        for (Video video : videos) {
-            if (!video.isVisto()) {
-                pendientes.add(video);
+    public Video[] pendientes() {
+        Video[] pendientes = new Video[videoCount];
+        int count = 0;
+        for (int i = 0; i < videoCount; i++) {
+            if (videos[i] != null && !videos[i].isVisto()) {
+                pendientes[count++] = videos[i];
             }
         }
-        return pendientes;
+        return Arrays.copyOf(pendientes, count); // Ajustar el tamaño del array al número real de elementos
     }
 
-    public List<Video> favoritas() {
-        List<Video> favoritas = new ArrayList<>();
-        for (Video video : videos) {
-            if (video.getCalificacion() >= 4) { // Por ejemplo, calificación de 4 o más
-                favoritas.add(video);
+    public Video[] favoritas() {
+        Video[] favoritas = new Video[videoCount];
+        int count = 0;
+        for (int i = 0; i < videoCount; i++) {
+            if (videos[i] != null && videos[i].getCalificacion() >= 4) {
+                favoritas[count++] = videos[i];
             }
         }
-        return favoritas;
+        return Arrays.copyOf(favoritas, count); // Ajustar el tamaño del array al número real de elementos
     }
 
     public Serie serieMasCapitulos() {
