@@ -18,11 +18,13 @@ public class MinetflixService {
         this.videoCount = 0;
     }
 
-    public void agregarVideo(Video video) {
+    public int agregarVideo(Video video) {
         if (videoCount < videos.length) {
             this.videos[videoCount++] = video;
+            return videoCount - 1; // Devolver el índice del video agregado
         } else {
             System.out.println("Array completo, no se pueden agregar más videos.");
+            return -1;
         }
     }
 
