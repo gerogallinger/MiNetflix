@@ -62,7 +62,7 @@ public class MinetflixService {
         Video[] favoritas = new Video[videoCount];
         int count = 0;
         for (int i = 0; i < videoCount; i++) {
-            if (videos[i] != null && videos[i].getCalificacion() >= 4) {
+            if (videos[i] != null && videos[i].getCalificacion() >= 8) {
                 favoritas[count++] = videos[i];
             }
         }

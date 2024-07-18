@@ -42,32 +42,41 @@ public class Minetflixapp {
             }
             // agregar antes de cada llamada al metodo limpiar la pantalla
 
-            if (opcion == 1) {
-                // limpiamos la consola
-                clearScreen();
-                registrarPelicula(lector, minetflixService);
-            } else if (opcion == 2) {
-                clearScreen();
-                registrarSerie(lector, minetflixService);
-            } else if (opcion == 3) {
-                clearScreen();
-                registrarCapitulo(lector, minetflixService);
-            } else if (opcion == 4) {
-                clearScreen();
-                actualizarPelicula(lector, minetflixService);
-            } else if (opcion == 5) {
-                clearScreen();
-                actualizarSerie(lector, minetflixService);
-            } else if (opcion == 6) {
-                clearScreen();
-                actualizarCapitulo(lector, minetflixService);
-            } else if (opcion == 7) {
-                clearScreen();
-                listarSeriesAndPeliculas(lector, minetflixService);
-            } else if (opcion == 8) {
-                System.out.println("Saliendo");
-            } else {
-                System.out.println("Error.");
+            switch (opcion) {
+                case 1:
+                    clearScreen();
+                    registrarPelicula(lector, minetflixService);
+                    break;
+                case 2:
+                    clearScreen();
+                    registrarSerie(lector, minetflixService);
+                    break;
+                case 3:
+                    clearScreen();
+                    registrarCapitulo(lector, minetflixService);
+                    break;
+                case 4:
+                    clearScreen();
+                    actualizarPelicula(lector, minetflixService);
+                    break;
+                case 5:
+                    clearScreen();
+                    actualizarSerie(lector, minetflixService);
+                    break;
+                case 6:
+                    clearScreen();
+                    actualizarCapitulo(lector, minetflixService);
+                    break;
+                case 7:
+                    clearScreen();
+                    listados(lector, minetflixService);
+                    break;
+                case 8:
+                    System.out.println("Saliendo");
+                    break;
+                default:
+                    System.out.println("Error.");
+                    break;
             }
         }
 
@@ -282,7 +291,196 @@ public class Minetflixapp {
 
     }
 
-    public static void listarSeriesAndPeliculas(Scanner lector, MinetflixService minetflixService) {
+    public static void listados(Scanner lector, MinetflixService minetflixService) {
+        int opcionListado = 0;
+        // hacer un menu con opciones para listar:
+        // 1.- Listar todas las series
+        // 2.- Listar todas las peliculas
+        // 3.- Listar videos vistos
+        // 4.- Listar videos pendientes
+        // 5.- Listar videos favoritos
+        // 6.- Listar serie con mas capitulos
+        // 7.- Listar pelicula mas corta
+
+        while (opcionListado != 8) {
+            System.out.println("Listado de Videos");
+            System.out.println("1.- Listar todas las series");
+            System.out.println("2.- Listar todas las peliculas");
+            System.out.println("3.- Listar videos vistos");
+            System.out.println("4.- Listar videos pendientes");
+            System.out.println("5.- Listar videos favoritos");
+            System.out.println("6.- Listar serie con mas capitulos");
+            System.out.println("7.- Listar pelicula mas corta");
+            System.out.println("8.- Volver al menu anterior");
+
+            System.out.print("Seleccione una opcion: ");
+            // leer la opcion ingresada
+            if (lector.hasNextInt()) {
+                opcionListado = lector.nextInt();
+                lector.nextLine(); // Consumir la nueva línea residual
+            } else {
+                System.out.println("Por favor, ingresa un número válido.");
+                lector.next(); // Descartar la entrada no válida
+                continue;
+            }
+
+            switch (opcionListado) {
+                case 1:
+                    clearScreen();
+                    listarSeries(minetflixService);
+                    break;
+                case 2:
+                    clearScreen();
+                    listarPeliculas(minetflixService);
+                    break;
+                case 3:
+                    clearScreen();
+                    listarVideosVistos(minetflixService);
+                    break;
+                case 4:
+                    clearScreen();
+                    listarVideosPendientes(minetflixService);
+                    break;
+                case 5:
+                    clearScreen();
+                    listarVideosFavoritos(minetflixService);
+                    break;
+                case 6:
+                    clearScreen();
+                    listarSeriesMayorCaps(minetflixService);
+                    break;
+                case 7:
+                    clearScreen();
+                    listarPeliculaMasCorta(minetflixService);
+                    break;
+                case 8:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
+
+    public static void listarVideosVistos(MinetflixService minetflixService) {
+        // Muestra por pantalla los datos correspondientes a los videos vistos por el
+        // usuario. En primer lugar se visualizan las películas y luego las series.
+        // Mostrar tanto peliculas como series vistas (usar instanceof)
+
+        System.out.println("Videos vistos: ");
+
+        // Para el caso de las peliculas mostramos el titulo , duracion, genero y anio
+        // Para el caso de las series mostramos el titulo, temporadas , genero y anio
+        for (Video video : minetflixService.vistos()) {
+            if (video instanceof Pelicula) {
+                Pelicula pelicula = (Pelicula) video;
+                System.out.println(" -- " + pelicula.getTitulo() + " -- Duracion: " + pelicula.getDuracion()
+                        + " minutos" + " -- Genero: " + pelicula.getGenero() + " -- Anio: " + pelicula.getAnio());
+            } else if (video instanceof Serie) {
+                Serie serie = (Serie) video;
+                System.out.println(" -- " + serie.getTitulo() + " -- Temporadas: " + serie.getTemporadas()
+                        + " -- Genero: " + serie.getGenero() + " -- Anio: " + serie.getAnio());
+            }
+        }
+
+    }
+
+    public static void listarVideosPendientes(MinetflixService minetflixService) {
+        // Mostramos un listado de los videos que el usuario comenzo a ver pero no los
+        // termino
+
+        System.out.println("Videos pendientes: ");
+        // lista de videos que tienen isVisto en false y tiempo visto mayor a 0
+        for (Video video : minetflixService.pendientes()) {
+            if (video instanceof Pelicula) {
+                Pelicula pelicula = (Pelicula) video;
+                System.out.println(" -- " + pelicula.getTitulo() + " -- Duracion: " + pelicula.getDuracion()
+                        + " minutos" + " -- Genero: " + pelicula.getGenero() + " -- Anio: " + pelicula.getAnio());
+            } else if (video instanceof Serie) {
+                Serie serie = (Serie) video;
+                System.out.println(" -- " + serie.getTitulo() + " -- Temporadas: " + serie.getTemporadas()
+                        + " -- Genero: " + serie.getGenero() + " -- Anio: " + serie.getAnio());
+            }
+        }
+
+    }
+
+    public static void listarVideosFavoritos(MinetflixService minetflixService) {
+        // mostramos un listado de los videos que estan marcados con mas de 8 puntos
+        // el listado se visualiza ordenado de forma descendente por la calificacion
+        System.out.println("Videos favoritos: ");
+        // lista de videos que tienen calificacion mayor o igual a 8
+        for (Video video : minetflixService.favoritas()) {
+            if (video instanceof Pelicula) {
+                Pelicula pelicula = (Pelicula) video;
+                System.out.println(" -- " + pelicula.getTitulo() + " -- Duracion: " + pelicula.getDuracion()
+                        + " minutos" + " -- Genero: " + pelicula.getGenero() + " -- Anio: " + pelicula.getAnio());
+            } else if (video instanceof Serie) {
+                Serie serie = (Serie) video;
+                System.out.println(" -- " + serie.getTitulo() + " -- Temporadas: " + serie.getTemporadas()
+                        + " -- Genero: " + serie.getGenero() + " -- Anio: " + serie.getAnio());
+            }
+        }
+
+    }
+
+    public static void listarSeriesMayorCaps(MinetflixService minetflixService) {
+        // mostramos la serie con mayor cantidad de capitulos
+        System.out.println("Serie con mayor cantidad de capitulos: ");
+        // Imprimos por pantalla todos los datos de la serie
+        Serie serie = minetflixService.serieMasCapitulos();
+        System.out.println(" -- " + serie.getTitulo() + " -- Temporadas: " + serie.getTemporadas()
+                + " -- Genero: " + serie.getGenero() + " -- Anio: " + serie.getAnio());
+
+    }
+
+    public static void listarPeliculaMasCorta(MinetflixService minetflixService) {
+        // mostramos la pelicula que tiene menor duracion
+        System.out.println("Pelicula con menor duracion");
+        // Imprimos por pantalla todos los datos de la serie
+        Pelicula pelicula = minetflixService.peliculaMasCorta();
+        System.out.println(" -- " + pelicula.getTitulo() + " -- Duracion: " + pelicula.getDuracion() + " minutos"
+                + " -- Genero: " + pelicula.getGenero() + " -- Anio: " + pelicula.getAnio());
+
+    }
+
+    public static void listarPeliculas(MinetflixService minetflixService) {
+
+        // desglozar de los videos cuales son series y cuales peliculas
+        Serie[] series = new Serie[100]; // Suponiendo un tamaño máximo
+        Pelicula[] peliculas = new Pelicula[100];
+        int serieCount = 0, peliculaCount = 0;
+
+        for (Video video : minetflixService.getVideos()) {
+            if (video == null)
+                break;
+            if (video instanceof Serie) {
+                series[serieCount++] = (Serie) video;
+            } else if (video instanceof Pelicula) {
+                peliculas[peliculaCount++] = (Pelicula) video;
+            }
+        }
+
+        System.out.println("Series: ");
+        for (int i = 0; i < serieCount; i++) {
+            System.out.println(" -- " + series[i].getTitulo() + " -- Temporadas: " + series[i].getTemporadas()
+                    + " -- Genero: " + series[i].getGenero());
+            // aca vamos a listar los capitulos por cada serie
+            for (int j = 0; j < series[i].capitulos.length; j++) {
+
+                System.out.println("Capitulo: " + series[i].capitulos[j].getTitulo());
+            }
+        }
+
+        System.out.println("Peliculas: ");
+        for (int i = 0; i < peliculaCount; i++) {
+            System.out.println(
+                    " -- " + peliculas[i].getTitulo() + " -- Duracion: " + peliculas[i].getDuracion() + " minutos");
+        }
+
+    }
+
+    public static void listarSeries(MinetflixService minetflixService) {
 
         // desglozar de los videos cuales son series y cuales peliculas
         Serie[] series = new Serie[100]; // Suponiendo un tamaño máximo
@@ -319,7 +517,7 @@ public class Minetflixapp {
     }
 
     public static void clearScreen() {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 20; i++) {
             System.out.println();
         }
     }
